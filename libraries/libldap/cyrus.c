@@ -516,6 +516,28 @@ ldap_int_sasl_bind(
 				}
 			}
 #endif
+
+#define SASL_GSSAPI_CHANNEL_BINDING 23
+#ifdef SASL_GSSAPI_CHANNEL_BINDING	/* */
+			{
+				struct berval cbv = { 0, NULL };
+				if ( ld->ld_defconn->lconn_sasl_gssapi_cbind == NULL &&
+					!ldap_pvt_tls_get_peercert( ssl, &cbv )) {
+					sasl_channel_binding_t *cb = ldap_memalloc( sizeof(*cb) +
+						cbv.bv_len);
+					void *cb_data; /* used since cb->data is const* */
+					cb->name = "tls-server-end-point";
+					cb->critical = 0;
+					cb->len = cbv.bv_len;
+					cb->data = cb_data = cb+1;
+					memcpy( cb_data, cbv.bv_val, cbv.bv_len );
+					ldap_memfree(cbv.bv_val);
+					sasl_setprop( ld->ld_defconn->lconn_sasl_authctx,
+						SASL_GSSAPI_CHANNEL_BINDING, cb );
+					ld->ld_defconn->lconn_sasl_gssapi_cbind = cb;
+				}
+			}
+#endif
 		}
 #endif
 

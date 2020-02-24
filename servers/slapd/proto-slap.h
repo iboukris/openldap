@@ -1682,6 +1682,8 @@ LDAP_SLAPD_F (int) slap_sasl_external( Connection *c,
 
 LDAP_SLAPD_F (int) slap_sasl_cbinding( Connection *c,
 	struct berval *cbv );
+LDAP_SLAPD_F (int) slap_sasl_gssapi_cbinding( Connection *c,
+	struct berval *cbv );
 
 LDAP_SLAPD_F (int) slap_sasl_reset( Connection *c );
 LDAP_SLAPD_F (int) slap_sasl_close( Connection *c );

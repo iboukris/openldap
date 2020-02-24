@@ -1446,6 +1446,15 @@ connection_read( ber_socket_t s, conn_readinfo *cri )
 				if ( ldap_pvt_tls_get_unique( ssl, &cbv, 1 ))
 					slap_sasl_cbinding( c, &cbv );
 			}
+			{
+				// TODO:
+				//struct berval cbv = {0};
+				//if ( ldap_pvt_tls_get_mycert( ssl, &cbv )) {
+				//	slap_sasl_gssapi_cbinding( c, &cbv );
+				//	ldap_memfree(cbv.bv_val);
+				//}
+
+			}
 		} else if ( rc == 1 && ber_sockbuf_ctrl( c->c_sb,
 			LBER_SB_OPT_NEEDS_WRITE, NULL )) {	/* need to retry */
 			slapd_set_write( s, 1 );

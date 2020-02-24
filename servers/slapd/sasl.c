@@ -1528,6 +1528,23 @@ int slap_sasl_cbinding( Connection *conn, struct berval *cbv )
 	return LDAP_SUCCESS;
 }
 
+#define SASL_GSSAPI_CHANNEL_BINDING 23
+
+int slap_sasl_gssapi_cbinding( Connection *conn, struct berval *cbv )
+{
+#ifdef SASL_GSSAPI_CHANNEL_BINDING
+        sasl_channel_binding_t *cb = ch_malloc( sizeof(*cb) + cbv->bv_len );;
+        cb->name = "tls-server-end-point";
+        cb->critical = 0;
+        cb->data = (char *)(cb+1);
+        cb->len = cbv->bv_len;
+        memcpy( (void *)cb->data, cbv->bv_val, cbv->bv_len );
+        sasl_setprop( conn->c_sasl_authctx, SASL_GSSAPI_CHANNEL_BINDING, cb );
+        conn->c_sasl_cbind = cb;
+#endif
+        return LDAP_SUCCESS;
+}
+
 int slap_sasl_reset( Connection *conn )
 {
 	return LDAP_SUCCESS;
